@@ -5,6 +5,17 @@
   Считаем, что всегда передается тег, допускающий вставку текста в качестве своего содержимого (P, DIV, I и пр.).
 */
 export function appendToBody(tag, content, count) {
+    const body = document.body;
+    let str = '<';
+    str += tag;
+    str += '>';
+    str += content;
+    str += '</';
+    str += tag;
+    str += '>';
+    for (let i = 0; i < count; i++) {
+        body.insertAdjacentHTML('afterbegin', str);
+    }
 }
 
 /*
@@ -15,6 +26,23 @@ export function appendToBody(tag, content, count) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function generateTree(childrenCount, level) {
+    const body = document.body;
+    const div = document.createElement('div');
+    div.setAttribute('class', 'item_1');
+    body.append(div);
+    let n = 1;
+    function Tree(Elem, count, level, childrenCount) {
+        count++;
+        let div_s;
+        for (let i = 0; i < childrenCount; i++) {
+            div_s = document.createElement('div');
+            div_s.setAttribute('class', 'item_' + count);
+            Elem.append(div_s);
+            if (count < level) Tree(div_s, count, level, childrenCount);
+        }
+    }
+    Tree(div, n, level, childrenCount);
+    return div;
 }
 
 /*
@@ -26,4 +54,15 @@ export function generateTree(childrenCount, level) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function replaceNodes() {
+    const body = document.body;
+    generateTree(2, 3);
+    let size = body.querySelectorAll('.item_2');
+    let section;
+    size.forEach((element) => {
+        section = document.createElement('section');
+        section.setAttribute('class', 'item_2');
+        section.innerHTML = element.innerHTML;
+        element.replaceWith(section);
+    });
+    return body.firstChild;
 }
